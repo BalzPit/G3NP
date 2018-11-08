@@ -56,15 +56,15 @@ public class ComparisonActivity extends AppCompatActivity {
             char n= original.charAt(oi);
             char m= OCRtext.charAt(ri);
             if (n==m){
-                if (n==comma){
+                if (n==comma){  //the two chars are commas therefore both words that just ended were perfectly matching
                     rec++;
                     par++;
                 }
-                oi++;
+                oi++;      //matching but the words still have chars to compare
                 ri++;
             }
             else{
-                oi= jumptonext(oi, original);  //comparison failed, go to the next word of both strings
+                oi= jumptonext(oi, original);  //comparison failed, go to the next word in both strings
                 ri= jumptonext(ri, OCRtext);
                 par++;
             }
