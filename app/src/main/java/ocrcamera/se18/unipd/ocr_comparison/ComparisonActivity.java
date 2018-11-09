@@ -44,53 +44,15 @@ public class ComparisonActivity extends AppCompatActivity {
     @return Double p  0 <= p <= 1 ratio of words that are the same in both strings
     written by Balzan Pietro
      */
-    public double OCReffectiveness(String original, String OCRtext){
-        int rec= 0;         //matching words
-        int par= 0;         //total amount of words checked
-        int o= original.length();
-        int r= OCRtext.length();
-        int oi=0;          //indexes of characters to compare
-        int ri=0;          //in the two strings
-        char comma= ",".charAt(0);
-        while(oi<o && ri<r){
-            char n= original.charAt(oi);
-            char m= OCRtext.charAt(ri);
-            if (n==m){
-                if (n==comma){  //the two chars are commas therefore both words that just ended were perfectly matching
-                    rec++;
-                    par++;
-                }
-                oi++;      //matching but the words still have chars to compare
-                ri++;
-            }
-            else{
-                oi= jumptonext(oi, original);  //comparison failed, go to the next word in both strings
-                ri= jumptonext(ri, OCRtext);
-                par++;
+    public double OCReffectiveness(String original, String OCRtext) {
+        int rec = 0;         //matching words
+        String[] a= original.split(",[ ]*");
+        for (int i=0; i<a.length; i++){
+            if(OCRtext.contains(a[i])){
+                rec++;
             }
         }
+        int par= a.length;   //numbers of words in the original
         return rec/par;
     }
-
-    /*
-    this method returns the index of the next word of the string, if there is one
-    (words are separated by commas)
-    @param String s the string
-    @param int i original index
-    @return int i updated index signaling the start of the next word
-    @modifies int i the index
-    written by Balzan Pietro
-     */
-    public int jumptonext(int i, String s){
-        char comma= ",".charAt(0);
-        while(s.charAt(i)!=comma){
-            i++;
-            if (i==s.length()){           //we reached the end of the string
-                return i;
-            }
-        }
-        i++;  //when s.charAt(i) equals "," that is the end of the previous word, we need to go to the next one
-        return i;
-    }
-
 }
