@@ -16,7 +16,6 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class ComparisonActivity extends AppCompatActivity {
-    public String testooriginale;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,21 +37,52 @@ public class ComparisonActivity extends AppCompatActivity {
     }
 
     /*
+    this method writes a report of the ocr success rate for a single file
+    @param String report :the string that contains recognition success rates for all files
+    @param String recogtext :the ocr string for this particular file
+    @param String filename :the name of the file for wich the success rate is calculated
+    @param JSONObject js :the object that contains the string to compare to recogtext
+    @return String report
+    @modifies String report to update it with the result of that picture
+    Written by Balzan Pietro
+     */
+    public String testAndReport(String report, String recogtext, String filename, JSONObject js){
+        String original= null;
+        try {
+            original = js.getString("Ingredienti");
+        }
+        catch (org.json.JSONException e){
+            return report+filename+" => something went wrong.\n";
+        }
+        double n= ocrEffectiveness(original, recogtext);
+        report= report+filename+" => Success ratio: "+String.valueOf(n)+"\n";
+        return report;
+    }
+
+    /*
     this method compares the recognized string with the original one.
     @param String original
     @param String OCRtext
-    @return Double p  0 <= p <= 1 ratio of words that are the same in both strings
+    @return Double p : (0 <= p <= 1) ratio of matching words in the two strings
     written by Balzan Pietro
      */
-    public double OCReffectiveness(String original, String OCRtext) {
-        int rec = 0;         //matching words
-        String[] a= original.split(",[ ]*");
-        for (int i=0; i<a.length; i++){
-            if(OCRtext.contains(a[i])){
+    public double ocrEffectiveness(String original, String OCRtext) {
+        String s1= original.toLowerCase();
+        String s2= OCRtext.toLowerCase();
+        int rec = 0;    //matching words
+        int j=0;
+        int beginsWithIngredients= 0;
+        String[] a= s1.split(": |:|, |,|\\. |\\.");
+        if(a[0].equalsIgnoreCase("ingredients") || a[0].equalsIgnoreCase("ingredienti")) {
+            j = 1;  //start fom the second ingredient
+            beginsWithIngredients = 1;  //one less ingredient
+        }
+        int par= a.length;
+        for (int i=j; i<par; i++){
+            if(s2.contains(a[i])){
                 rec++;
             }
         }
-        int par= a.length;   //numbers of words in the original
-        return rec/par;
+        return rec/(par-beginsWithIngredients);
     }
 }
