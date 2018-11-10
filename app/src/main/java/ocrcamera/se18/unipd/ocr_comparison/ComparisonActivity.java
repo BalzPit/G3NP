@@ -38,25 +38,21 @@ public class ComparisonActivity extends AppCompatActivity {
 
     /*
     this method writes a report of the ocr success rate for a single file
-    @param String report :the string that contains recognition success rates for all files
     @param String recogtext :the ocr string for this particular file
     @param String filename :the name of the file for wich the success rate is calculated
     @param JSONObject js :the object that contains the string to compare to recogtext
-    @return String report
-    @modifies String report to update it with the result of that picture
-    Written by Balzan Pietro
+    @return String report :the string that contains recognition success rate for the file
      */
-    public String testAndReport(String report, String recogtext, String filename, JSONObject js){
+    public String testAndReport( String recogtext, String filename, JSONObject js){
         String original= null;
         try {
             original = js.getString("Ingredienti");
         }
         catch (org.json.JSONException e){
-            return report+filename+" => something went wrong.\n";
+            return filename+" => something went wrong.\n";
         }
         double n= ocrEffectiveness(original, recogtext);
-        report= report+filename+" => Success ratio: "+String.valueOf(n)+"\n";
-        return report;
+        return filename+" => Success ratio: "+String.valueOf(n)+"\n";
     }
 
     /*
@@ -64,7 +60,6 @@ public class ComparisonActivity extends AppCompatActivity {
     @param String original
     @param String OCRtext
     @return Double p : (0 <= p <= 1) ratio of matching words in the two strings
-    written by Balzan Pietro
      */
     public double ocrEffectiveness(String original, String OCRtext) {
         String s1= original.toLowerCase();
