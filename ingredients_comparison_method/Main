@@ -1,0 +1,69 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+import static java.lang.System.exit;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        FileReader correctReader = null;
+        FileReader extractedReader = null;
+
+        try{
+            correctReader = new FileReader("C:\\Users\\guoah\\OneDrive\\Desktop\\correctTxt.txt");
+            extractedReader = new FileReader("C:\\Users\\guoah\\OneDrive\\Desktop\\extractedTxt.txt");
+        }catch (java.io.FileNotFoundException e){
+            System.out.println("file_not_found");
+            exit(0);
+        }
+
+        BufferedReader bufReadCor = new BufferedReader(correctReader);
+        BufferedReader bufReadExtr = new BufferedReader(extractedReader);
+        StringBuilder correctTxt = new StringBuilder();
+        StringBuilder extractedTxt = new StringBuilder();
+        String currentLine;
+
+        try {
+            while ((currentLine = bufReadCor.readLine()) != null)
+                correctTxt.append(currentLine).append(" ");
+
+            while ((currentLine = bufReadExtr.readLine()) != null)
+                extractedTxt.append(currentLine).append(" ");
+        }catch (java.io.IOException ex){
+            System.out.println("IOExcep");
+        }
+
+        double comparisonResult = ingredientsTextComparison(correctTxt.toString(),extractedTxt.toString());
+        System.out.println(comparisonResult);
+    }
+
+    private static double ingredientsTextComparison(String correct, String extracted){
+
+        correct = correct.toLowerCase();
+        extracted = extracted.toLowerCase();
+        double matches = 0;
+        int beginsWithIngredients = 0;
+        int j = 0;
+
+        String[] ingredient = correct.split(": |:|, |,|\\. |\\.");  // ": " or ":" or ", "...
+
+        if(ingredient[0].equalsIgnoreCase("ingredients")) {
+            j = 1;  //start fom the second ingredient
+            beginsWithIngredients = 1;  //one less ingredient
+        }
+
+        for(int i=j;i < ingredient.length;i++) {
+
+            if (extracted.contains(ingredient[i])) {
+                System.out.println(ingredient[i]);
+                matches++;
+            }
+        }
+
+
+        return matches/(ingredient.length-beginsWithIngredients);
+
+
+    }
+}
